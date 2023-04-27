@@ -67,7 +67,19 @@ class Planet(db.Model):
     born_here = db.relationship("Character", back_populates="planet", lazy=True)
 
     def __repr__(self):
-        return '<Planet %r>' % self.name 
+        return '<Planet %r>' % self.name
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "terrain": self.terrain,
+            "gravity": self.gravity,
+            "radius": self.radius,
+            
+            #"born_here" : [favorite.__repr__() for favorite in self.favourites],
+            #"post" : [favorite.__repr__() for favorite in self.favourites] 
+        } 
 
 class Character(db.Model):
     __tablename__ = 'character'
@@ -84,6 +96,19 @@ class Character(db.Model):
     origin_planet = db.Column(db.Integer(), db.ForeignKey("planet.id"))
     planet = db.relationship("Planet", back_populates="born_here", lazy=True)
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "lastname": self.lastname,
+            "birthdate": self.birthdate,
+            "gender": self.gender,
+            "eye_color": self.eye_color,
+
+            #"planet" : [favorite.__repr__() for favorite in self.favourites],
+            #"post" : [favorite.__repr__() for favorite in self.favourites] 
+        } 
+
 
 class Vehicule(db.Model):
     __tablename__ = 'vehicule'
@@ -94,3 +119,14 @@ class Vehicule(db.Model):
     speed = db.Column(db.String(250), nullable=True)
     #
     post = db.relationship("Post", back_populates="vehicule", lazy=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "capacity": self.capacity,
+            "speed": self.speed,
+
+            #"planet" : [favorite.__repr__() for favorite in self.favourites],
+            #"post" : [favorite.__repr__() for favorite in self.favourites] 
+        }

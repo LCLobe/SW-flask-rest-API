@@ -1,15 +1,16 @@
 from flask import Blueprint, jsonify
+from models  import db, User, Planet, Character, Vehicule, Post, Favourites #la clase
 
 api = Blueprint("api", __name__)
 
 @api.route('/users', methods=['GET'])
 def handle_get_users():
-
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
-
-    return jsonify(response_body), 200
+    users = db.session.query(User).all()
+    # users = User.query.all()
+    
+    users = list(map(lambda user : user.serialize(), users))
+ 
+    return jsonify(users), 200
 
 @api.route('/users/favourites', methods=['GET'])
 def handle_get_user_favourites():
@@ -22,12 +23,11 @@ def handle_get_user_favourites():
 
 @api.route('/people', methods=['GET'])
 def handle_get_characters():
-
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
-
-    return jsonify(response_body), 200
+    people = db.session.query(Character).all()
+    
+    people = list(map(lambda peopleitem : peopleitem.serialize(), people))
+ 
+    return jsonify(people), 200
 
 @api.route('/people/<int:people_id>', methods=['GET'])
 def handle_get_single_character():
@@ -40,6 +40,14 @@ def handle_get_single_character():
 
 @api.route('/planets', methods=['GET'])
 def handle_get_planets():
+    planets = db.session.query(Planet).all()
+    
+    planets = list(map(lambda planetitem : planetitem.serialize(), planets))
+ 
+    return jsonify(planets), 200
+
+@api.route('/planets/<int:planet_id>', methods=['GET'])
+def handle_get_sinlge_planet():
 
     response_body = {
         "msg": "Hello, this is your GET /user response "
@@ -47,8 +55,16 @@ def handle_get_planets():
 
     return jsonify(response_body), 200
 
-@api.route('/planets/<int:planet_id>', methods=['GET'])
-def handle_get_sinlge_planet():
+@api.route('/vehicules', methods=['GET'])
+def handle_get_vehicules():
+    vehicules = db.session.query(Vehicule).all()
+    
+    vehicules = list(map(lambda vehiculeitem : vehiculeitem.serialize(), vehicules))
+ 
+    return jsonify(vehicules), 200
+
+@api.route('/vehicules/<int:planet_id>', methods=['GET'])
+def handle_get_sinlge_vehicule():
 
     response_body = {
         "msg": "Hello, this is your GET /user response "
