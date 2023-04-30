@@ -78,6 +78,9 @@ class Planet(db.Model):
             "radius": self.radius,
             "born_here": [char.__repr__() for char in self.born_here] 
 
+            #"born_here" : [favorite.__repr__() for favorite in self.favourites],
+            #"post" : [favorite.__repr__() for favorite in self.favourites]
+
         }
 
 class Character(db.Model):
@@ -109,6 +112,9 @@ class Character(db.Model):
             "origin_planet": self.origin_planet, #one to one
            # "born_here": [char.__repr__() for char in self.born_here] 
 
+            #"planet" : [favorite.__repr__() for favorite in self.favourites],
+            #"post" : [favorite.__repr__() for favorite in self.favourites] 
+            
         }   
 
 class Vehicule(db.Model):
@@ -120,3 +126,14 @@ class Vehicule(db.Model):
     speed = db.Column(db.String(250), nullable=True)
     #
     post = db.relationship("Post", back_populates="vehicule", lazy=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "capacity": self.capacity,
+            "speed": self.speed,
+
+            #"planet" : [favorite.__repr__() for favorite in self.favourites],
+            #"post" : [favorite.__repr__() for favorite in self.favourites] 
+        }
