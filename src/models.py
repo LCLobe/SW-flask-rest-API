@@ -23,8 +23,11 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             # do not serialize the password, its a security breach
-            "favourites": [favorite.__repr__() for favorite in self.favourites] 
+            #"favourites": [favorite.__repr__() for favorite in self.favourites] 
         }
+    
+    def my_fav_list(self):
+        return [ favorite.fav_repr() for favorite in self.favourites]
 
 class Favourites(db.Model):
     __tablename__ = 'favourite'
@@ -36,7 +39,16 @@ class Favourites(db.Model):
     post = db.relationship('Post', back_populates='favourited', lazy=True)
 
     def __repr__(self):
-        return '<FavPost %r>' % self.post_id   
+        #return '<Post %r>' % self.post_id
+        return '<Post %r>' % self.post.favrepr()
+
+    def fav_repr(self):
+        return {
+            "data_type" : self.post.display_media_type() ,
+            "data": self.post.favrepr()
+        }
+
+       
 
 class Post(db.Model):
     __tablename__ = 'post'
@@ -52,6 +64,30 @@ class Post(db.Model):
     vehicule = db.relationship('Vehicule', back_populates='post', lazy=True)
     owner = db.relationship('User', back_populates='posts', lazy=True)
     favourited = db.relationship('Favourites', back_populates='post', lazy=True)
+
+    def favrepr(self):
+        return f'{self.display_media()}'
+
+    def display_media(self):
+      
+        if self.character is not None:
+            return self.character.serialize()
+        elif self.planet is not None:
+            return self.planet.serialize()
+        elif self.vehicule is not None:
+            return self.vehicule.serialize() 
+        pass
+
+    def display_media_type(self):
+      
+        if self.character is not None:
+            return "people"
+        elif self.planet is not None:
+            return "planets"
+        elif self.vehicule is not None:
+            return "vehicules" 
+        pass
+    
 
 class Planet(db.Model):
     __tablename__ = 'planet'
@@ -99,7 +135,7 @@ class Character(db.Model):
     planet = db.relationship("Planet", back_populates="born_here", lazy=True)
 
     def __repr__(self):
-        return '<Char %r>' % self.post_id
+        return '<Char %r>' % self.id
 
     def  serialize(self):
         return {
@@ -110,11 +146,11 @@ class Character(db.Model):
             "gender": self.gender,
             "eye_color": self.eye_color,
             "origin_planet": self.origin_planet, #one to one
-           # "born_here": [char.__repr__() for char in self.born_here] 
+
 
             #"planet" : [favorite.__repr__() for favorite in self.favourites],
             #"post" : [favorite.__repr__() for favorite in self.favourites] 
-            
+
         }   
 
 class Vehicule(db.Model):
