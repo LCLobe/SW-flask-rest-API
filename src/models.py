@@ -56,12 +56,12 @@ class Post(db.Model):
     owner_id = db.Column(db.Integer(), db.ForeignKey("user.id"), nullable=False)
     planet_media_id = db.Column(db.Integer(), db.ForeignKey("planet.id"))
     character_media_id = db.Column(db.Integer(), db.ForeignKey("character.id"))
-    vehicule_media_id = db.Column(db.Integer(), db.ForeignKey("vehicule.id"))
+    vehicle_media_id = db.Column(db.Integer(), db.ForeignKey("vehicle.id"))
 
-    # Relaciones Many-to-One con las clases 'Planet', 'Character' y 'Vehicule'
+    # Relaciones Many-to-One con las clases 'Planet', 'Character' y 'Vehicle'
     planet = db.relationship('Planet', back_populates='post', lazy=True) #
     character = db.relationship('Character', back_populates='post', lazy=True)
-    vehicule = db.relationship('Vehicule', back_populates='post', lazy=True)
+    vehicle = db.relationship('Vehicle', back_populates='post', lazy=True)
     owner = db.relationship('User', back_populates='posts', lazy=True)
     favourited = db.relationship('Favourites', back_populates='post', lazy=True)
 
@@ -74,8 +74,8 @@ class Post(db.Model):
             return self.character.serialize()
         elif self.planet is not None:
             return self.planet.serialize()
-        elif self.vehicule is not None:
-            return self.vehicule.serialize() 
+        elif self.vehicle is not None:
+            return self.vehicle.serialize() 
         pass
 
     def display_media_type(self):
@@ -84,8 +84,8 @@ class Post(db.Model):
             return "people"
         elif self.planet is not None:
             return "planets"
-        elif self.vehicule is not None:
-            return "vehicules" 
+        elif self.vehicle is not None:
+            return "vehicles" 
         pass
     
 
@@ -135,7 +135,7 @@ class Character(db.Model):
     planet = db.relationship("Planet", back_populates="born_here", lazy=True)
 
     def __repr__(self):
-        return '<Char %r>' % self.id
+        return '<Char %r>' % self.name
 
     def  serialize(self):
         return {
@@ -147,21 +147,17 @@ class Character(db.Model):
             "eye_color": self.eye_color,
             "origin_planet": self.origin_planet, #one to one
 
-
-            #"planet" : [favorite.__repr__() for favorite in self.favourites],
-            #"post" : [favorite.__repr__() for favorite in self.favourites] 
-
         }   
 
-class Vehicule(db.Model):
-    __tablename__ = 'vehicule'
+class Vehicle(db.Model):
+    __tablename__ = 'vehicle'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(250), nullable=False)
 
     capacity = db.Column(db.String(250), nullable=True)
     speed = db.Column(db.String(250), nullable=True)
     #
-    post = db.relationship("Post", back_populates="vehicule", lazy=True)
+    post = db.relationship("Post", back_populates="vehicle", lazy=True)
 
     def serialize(self):
         return {
@@ -169,7 +165,6 @@ class Vehicule(db.Model):
             "name": self.name,
             "capacity": self.capacity,
             "speed": self.speed,
-
-            #"planet" : [favorite.__repr__() for favorite in self.favourites],
-            #"post" : [favorite.__repr__() for favorite in self.favourites] 
         }
+    def __repr__(self):
+        return '<Vehicle %r>' % self.name
