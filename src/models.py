@@ -67,7 +67,18 @@ class Planet(db.Model):
     born_here = db.relationship("Character", back_populates="planet", lazy=True)
 
     def __repr__(self):
-        return '<Planet %r>' % self.name 
+        return '<Planet %r>' % self.name
+
+    def  serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "terrain": self.terrain,
+            "gravity": self.gravity,
+            "radius": self.radius,
+            "born_here": [char.__repr__() for char in self.born_here] 
+
+        }
 
 class Character(db.Model):
     __tablename__ = 'character'
@@ -84,6 +95,21 @@ class Character(db.Model):
     origin_planet = db.Column(db.Integer(), db.ForeignKey("planet.id"))
     planet = db.relationship("Planet", back_populates="born_here", lazy=True)
 
+    def __repr__(self):
+        return '<Char %r>' % self.post_id
+
+    def  serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "lastname": self.lastname,
+            "birthdate": self.birthdate,
+            "gender": self.gender,
+            "eye_color": self.eye_color,
+            "origin_planet": self.origin_planet, #one to one
+           # "born_here": [char.__repr__() for char in self.born_here] 
+
+        }   
 
 class Vehicule(db.Model):
     __tablename__ = 'vehicule'
